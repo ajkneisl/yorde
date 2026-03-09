@@ -91,12 +91,14 @@ export function App() {
                         title="Burrow"
                         description="Full-stack app on the App Store and at umn.app. React Native frontend with a Kotlin/Ktor backend deployed via Docker."
                         tech={["React Native", "Kotlin", "Ktor", "Docker"]}
-                        link="https://github.com/ajkneisl/burrow"
+                        github="https://github.com/ajkneisl/burrow"
+                        website="https://umn.app"
                     />
                     <Project
                         title="Echoes"
                         description="Hackathon project that placed top 5 at a Minnesota hackathon. Mobile app built with Kotlin and React Native."
                         tech={["Kotlin", "React Native"]}
+                        github="https://github.com/ajkneisl/echoes"
                     />
                 </div>
             </section>
@@ -172,18 +174,33 @@ function Job({ role, company, period, bullets }: {
     )
 }
 
-function Project({ title, description, tech, link }: {
+function Project({ title, description, tech, github, website }: {
     title: string
     description: string
     tech: string[]
-    link?: string
+    github?: string
+    website?: string
 }) {
-    const inner = (
+    return (
         <div class="border border-gray-800/50 rounded-lg p-4 hover:border-gray-700 transition-colors bg-gray-900/30">
             <div class="flex items-center gap-2">
                 <span class="text-sky-400/70 font-mono text-sm">{">"}</span>
                 <h3 class="font-medium text-white">{title}</h3>
-                {link && <span class="text-gray-700 text-xs font-mono ml-auto">↗</span>}
+                {(github || website) && (
+                    <div class="flex items-center gap-2 ml-auto text-xs font-mono">
+                        {github && (
+                            <a href={github} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-sky-400 transition-colors">
+                                github
+                            </a>
+                        )}
+                        {github && website && <span class="text-gray-800">|</span>}
+                        {website && (
+                            <a href={website} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-sky-400 transition-colors">
+                                website
+                            </a>
+                        )}
+                    </div>
+                )}
             </div>
             <p class="text-sm text-gray-400 mt-2">{description}</p>
             <div class="flex flex-wrap gap-2 mt-3">
@@ -195,14 +212,4 @@ function Project({ title, description, tech, link }: {
             </div>
         </div>
     )
-
-    if (link) {
-        return (
-            <a href={link} target="_blank" rel="noopener noreferrer" class="block">
-                {inner}
-            </a>
-        )
-    }
-
-    return inner
 }
