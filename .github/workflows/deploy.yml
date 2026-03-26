@@ -26,9 +26,9 @@ jobs:
             username: ${{ secrets.SERVER_USER }}
             key: ${{ secrets.SERVER_SSH_KEY }}
             script: |
-              cd /opt/docker/yorde
+              cd /opt/docker/portfolio/yorde
               git pull origin main
               docker build -t yorde:1.0.0 .
               docker stop yorde || true
               docker rm yorde || true
-              docker compose -f /opt/docker/Personal.yml up -d yorde
+              docker compose -f /opt/docker/portfolio/Personal.yml up -d yorde
