@@ -1,221 +1,232 @@
+import type { JSX } from "preact"
+
+type Bullet = string | JSX.Element
+
 export function App() {
     return (
-        <div class="max-w-2xl mx-auto px-6 py-16 text-gray-300">
+        <div class="max-w-3xl mx-auto px-6 py-16 text-gray-300">
             {/* Header */}
-            <header class="mb-14 animate-fade-in">
-                <div class="flex items-center gap-5">
+            <header class="mb-12 animate-fade-in">
+                <div class="flex items-start gap-5">
                     <img
                         src="/yord.webp"
-                        alt="Yord"
-                        class="w-20 h-20 rounded-lg object-cover border border-gray-800"
+                        alt="Yordanos Eshete"
+                        class="w-20 h-20 rounded-lg object-cover border border-gray-800 shrink-0"
                     />
-                    <div>
-                        <h1 class="text-2xl font-semibold tracking-tight text-white font-mono cursor-blink">
+                    <div class="flex-1 min-w-0">
+                        <h1 class="text-3xl font-semibold tracking-tight text-white">
                             Yordanos Eshete
                         </h1>
-                        <p class="text-gray-500 mt-1 font-mono text-sm">
-                            <span class="text-sky-400">~/</span>developer<span class="text-gray-600">@</span>minnesota
+                        <p class="text-sm text-gray-500 mt-1">
+                            Computer Science Student · University of Minnesota · US Citizen
                         </p>
-                        <div class="flex items-center gap-3 mt-1.5 text-xs font-mono">
-                            <a href="mailto:ygeshete@gmail.com" class="text-gray-600 hover:text-sky-400 transition-colors">
-                                ygeshete@gmail.com
-                            </a>
-                            <span class="text-gray-800">|</span>
-                            <a href="https://github.com/YordanosEshete" target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-sky-400 transition-colors">
-                                github
-                            </a>
-                            <span class="text-gray-800">|</span>
-                            <a href="https://www.linkedin.com/in/yordanoseshete/" target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-sky-400 transition-colors">
-                                linkedin
-                            </a>
+                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-sm">
+                            <ContactLink href="mailto:ygeshete@gmail.com">ygeshete@gmail.com</ContactLink>
+                            <ContactLink href="https://github.com/YordanosEshete">github</ContactLink>
+                            <ContactLink href="https://www.linkedin.com/in/yordanoseshete/">linkedin</ContactLink>
                         </div>
                     </div>
                 </div>
-                <div class="mt-5 flex gap-3 text-xs font-mono">
-                    <a href="#experience" class="text-gray-500 hover:text-sky-400 transition-colors">
-                        <span class="text-gray-600">[</span>experience<span class="text-gray-600">]</span>
-                    </a>
-                    <a href="#projects" class="text-gray-500 hover:text-sky-400 transition-colors">
-                        <span class="text-gray-600">[</span>projects<span class="text-gray-600">]</span>
-                    </a>
-                    <a href="#skills" class="text-gray-500 hover:text-sky-400 transition-colors">
-                        <span class="text-gray-600">[</span>skills<span class="text-gray-600">]</span>
-                    </a>
-                </div>
             </header>
 
-            {/* Experience */}
-            <section id="experience" class="mb-14 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-                <SectionHeader label="experience" />
+            {/* Education */}
+            <Section id="education" label="Education" delay="0.1s">
+                <Entry
+                    title="University of Minnesota: Twin Cities"
+                    location="Minneapolis, MN"
+                    subtitle="Bachelor of Science in Computer Science · GPA 3.89"
+                    period="Expected May 2027"
+                />
+                <p class="text-sm text-gray-400 mt-3 leading-relaxed">
+                    <span class="text-gray-200 font-medium">Relevant Coursework: </span>
+                    Data Structures &amp; Algorithms, Advanced Programming Principles, Linear Algebra, Probability &amp; Statistics, Software Design &amp; Development.
+                </p>
+            </Section>
 
-                <div class="space-y-8">
-                    <Job
-                        role="IT Help Desk"
-                        company="University of Minnesota"
-                        period="Mar 2026 - Present"
+            {/* Experience */}
+            <Section id="experience" label="Experience" delay="0.2s">
+                <div class="space-y-7">
+                    <Entry
+                        title="Freelance Developer"
+                        location="Burnsville, MN"
+                        subtitle="Full-stack Developer · Python, TypeScript"
+                        period="January 2025 – Present"
                         bullets={[
-                            "Provide frontline technical support to students, faculty, and staff across campus",
-                            "Troubleshoot hardware, software, and network issues via phone, email, and walk-in",
-                            "Document and escalate complex issues through the ticketing system",
+                            <>Architected and developed <Strong>Tunnel Pathfinder</Strong>, a web application utilizing Dijkstra's algorithm to provide optimized navigation routes through the University of Minnesota's 6-mile Gopher Way tunnel system.</>,
+                            <>Built and deployed websites for 3 local churches, adding dynamic scheduling features to manage liturgy times, charity events, and volunteer opportunities.</>,
                         ]}
                     />
-                    <Job
-                        role="Freelance Developer"
-                        company=""
-                        period="Sep 2025 - Present"
+                    <Entry
+                        title="IT Technical Support Specialist"
+                        location="Minneapolis, MN"
+                        subtitle="University of Minnesota"
+                        period="January 2026 – Present"
                         bullets={[
-                            "Built a website for a local church to manage fasting schedules and participation",
-                            "Built an inventory management app for a food bank to streamline stock tracking",
-                        ]}
-                    />
-                    <Job
-                        role="Assistant Manager"
-                        company="Dollar Tree"
-                        period="Sep 2024 - Aug 2025"
-                        bullets={[
-                            "Led teams of 10-30 associates, handling scheduling, training, and daily task delegation",
-                            "Managed POS terminals and inventory-tracking software, troubleshooting issues on the fly",
-                            "Monitored inventory data to identify variances and reduce shrink",
-                            "Served as primary escalation point for operational and customer issues",
+                            "Delivered rapid-response technical support to students and faculty, independently diagnosing software, network, and hardware access issues.",
+                            "Bridged the gap between complex technical university systems and non-technical clients, translating troubleshooting steps into actionable, clear guidance.",
+                            "Managed a high-volume ticketing queue, documenting system behaviors and edge cases to streamline issue tracking and escalating critical network malfunctions to tier-2 administrators.",
                         ]}
                     />
                 </div>
-            </section>
+            </Section>
 
             {/* Projects */}
-            <section id="projects" class="mb-14 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-                <SectionHeader label="projects" />
-
-                <div class="space-y-6">
-                    <Project
+            <Section id="projects" label="Projects" delay="0.3s">
+                <div class="space-y-7">
+                    <Entry
                         title="Burrow"
-                        description="Full-stack app on the App Store and at umn.app. React Native frontend with a Kotlin/Ktor backend deployed via Docker."
-                        tech={["React Native", "Kotlin", "Ktor", "Docker"]}
-                        github="https://github.com/ajkneisl/burrow"
-                        website="https://umn.app"
+                        subtitle="TypeScript, Kotlin, React, PostgreSQL, Docker"
+                        period="August 2025 – Present"
+                        links={[
+                            { label: "github", href: "https://github.com/ajkneisl/burrow" },
+                            { label: "umn.app", href: "https://umn.app" },
+                        ]}
+                        bullets={[
+                            "Collaborated in a team of 5 to design a social-media platform enabling University of Minnesota students to find nearby study groups, group project opportunities, and events.",
+                            "Implemented push notifications and an interactive map showing meetings and events across the Twin Cities campus.",
+                            <>Won <Strong>Most Promising Project</Strong> after presenting to Social Coding board members in just under 6 weeks of development.</>,
+                        ]}
                     />
-                    <Project
-                        title="Echoes"
-                        description="Hackathon project that placed top 5 at a Minnesota hackathon. Mobile app built with Kotlin and React Native."
-                        tech={["Kotlin", "React Native"]}
-                        github="https://github.com/ajkneisl/echoes"
-                    />
-                    <Project
-                        title="Allersight"
-                        description="Top 10 hackathon project. Computer vision allergen detector for businesses and consumers."
-                        tech={["Computer Vision"]}
-                        website="https://allersight.com"
+                    <Entry
+                        title="Echoes — MinneHack '26"
+                        subtitle="React Native, TypeScript, Python, AWS, Docker"
+                        period="November 2025 – February 2026"
+                        links={[
+                            { label: "github", href: "https://github.com/ajkneisl/echoes" },
+                        ]}
+                        bullets={[
+                            "Built the client-side mobile infrastructure using React Native and TypeScript, translating requirements into a fully functional cross-platform application.",
+                            <>Won <Strong>top five</Strong> in the MinneHack '26 Hackathon competition.</>,
+                            "Collaborated in a team of four to engineer the visual identity and screen flow, programming reusable UI components for a highly responsive user experience.",
+                            "Integrated the frontend with a custom Kotlin backend, managing complex application state with asynchronous data fetching for optimal runtime performance.",
+                        ]}
                     />
                 </div>
-            </section>
+            </Section>
 
-            {/* Skills */}
-            <section id="skills" class="mb-14 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-                <SectionHeader label="skills" />
+            {/* Leadership */}
+            <Section id="leadership" label="Leadership" delay="0.4s">
+                <Entry
+                    title="Social Coding Officer"
+                    location="Minneapolis, MN"
+                    subtitle="University of Minnesota"
+                    period="September 2025 – Present"
+                    bullets={[
+                        "Mentored inexperienced developers from idea to launch of various web applications.",
+                        "Guided teams to communicate and build valuable, industry-relevant collaboration and workflow skills.",
+                        "Implemented and enforced timelines for project completion deadlines among 20 teams, mentoring underclassmen on project planning and accountability.",
+                        <>Presented personal team-project <em class="italic">Burrow</em>, deemed the #1 most promising project in the club.</>,
+                    ]}
+                />
+            </Section>
 
-                <div class="space-y-4">
-                    <SkillGroup label="languages" items={["TypeScript", "JavaScript", "Kotlin", "SQL"]} />
-                    <SkillGroup label="frontend" items={["React", "React Native", "Preact", "Tailwind CSS"]} />
-                    <SkillGroup label="backend" items={["Node.js", "Ktor"]} />
-                    <SkillGroup label="databases" items={["PostgreSQL", "MongoDB", "Redis"]} />
-                    <SkillGroup label="tools" items={["Docker", "Git", "Linux"]} />
+            {/* Technical Skills */}
+            <Section id="skills" label="Technical Skills" delay="0.5s">
+                <div class="space-y-2">
+                    <SkillGroup label="Languages" items={["Java", "Python", "C/C++", "SQL (Postgres)", "JavaScript", "TypeScript", "HTML/CSS", "Kotlin"]} />
+                    <SkillGroup label="Frameworks" items={["React", "Node.js", "Vue.js", "Angular"]} />
+                    <SkillGroup label="Developer Tools" items={["Git", "Docker", "Google Cloud Platform", "VS Code", "PyCharm", "IntelliJ"]} />
+                    <SkillGroup label="Libraries" items={["pandas", "NumPy", "Matplotlib"]} />
                 </div>
-            </section>
+            </Section>
 
             {/* Footer */}
-            <footer class="text-xs text-gray-600 pt-8 border-t border-gray-800/50 font-mono">
-                <span class="text-gray-700">{"// "}</span>yord eshete — {new Date().getFullYear()}
+            <footer class="text-xs text-gray-600 pt-8 mt-4 border-t border-gray-800/50">
+                © {new Date().getFullYear()} Yordanos Eshete
             </footer>
         </div>
     )
 }
 
-function SectionHeader({ label }: { label: string }) {
+function Section({ id, label, delay, children }: {
+    id: string
+    label: string
+    delay: string
+    children: JSX.Element | JSX.Element[]
+}) {
     return (
-        <h2 class="text-xs font-mono text-gray-600 mb-6 flex items-center gap-3">
-            <span class="text-sky-400/70">{">"}</span>
-            <span class="text-gray-500">{label}</span>
-            <span class="flex-1 border-b border-dashed border-gray-800" />
-        </h2>
+        <section id={id} class="mb-12 animate-fade-in" style={{ animationDelay: delay }}>
+            <h2 class="text-xs uppercase tracking-[0.2em] text-gray-500 font-semibold mb-5 pb-2 border-b border-gray-800">
+                {label}
+            </h2>
+            {children}
+        </section>
     )
+}
+
+function ContactLink({ href, children }: { href: string; children: string }) {
+    const isExternal = href.startsWith("http")
+    return (
+        <a
+            href={href}
+            target={isExternal ? "_blank" : undefined}
+            rel={isExternal ? "noopener noreferrer" : undefined}
+            class="text-gray-400 hover:text-sky-400 transition-colors"
+        >
+            {children}
+        </a>
+    )
+}
+
+function Strong({ children }: { children: JSX.Element | string }) {
+    return <strong class="text-white font-medium">{children}</strong>
 }
 
 function SkillGroup({ label, items }: { label: string; items: string[] }) {
     return (
-        <div class="flex flex-wrap items-baseline gap-x-1 gap-y-1 text-sm font-mono">
-            <span class="text-gray-600 text-xs mr-1">{label}:</span>
-            {items.map((s, i) => (
-                <span key={s}>
-                    <span class="text-sky-300/80">{s}</span>
-                    {i < items.length - 1 && <span class="text-gray-700">{","}</span>}
-                </span>
-            ))}
+        <div class="text-sm leading-relaxed">
+            <span class="text-white font-medium">{label}: </span>
+            <span class="text-gray-400">{items.join(", ")}</span>
         </div>
     )
 }
 
-function Job({ role, company, period, bullets }: {
-    role: string
-    company: string
-    period: string
-    bullets: string[]
-}) {
-    return (
-        <div class="group">
-            <div class="flex justify-between items-baseline gap-4">
-                <h3 class="font-medium text-white">
-                    {role}
-                    {company && <span class="text-gray-500 font-normal"> @ {company}</span>}
-                </h3>
-                <span class="text-xs text-gray-600 whitespace-nowrap font-mono">{period}</span>
-            </div>
-            <ul class="mt-2 space-y-1">
-                {bullets.map((b, i) => (
-                    <li key={i} class="text-sm text-gray-400 pl-5 relative before:content-['$'] before:absolute before:left-0 before:text-gray-700 before:font-mono before:text-xs">
-                        {b}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    )
-}
-
-function Project({ title, description, tech, github, website }: {
+function Entry({ title, location, subtitle, period, bullets, links }: {
     title: string
-    description: string
-    tech: string[]
-    github?: string
-    website?: string
+    location?: string
+    subtitle?: string
+    period: string
+    bullets?: Bullet[]
+    links?: { label: string; href: string }[]
 }) {
     return (
-        <div class="border border-gray-800/50 rounded-lg p-4 hover:border-gray-700 transition-colors bg-gray-900/30">
-            <div class="flex items-center gap-2">
-                <span class="text-sky-400/70 font-mono text-sm">{">"}</span>
-                <h3 class="font-medium text-white">{title}</h3>
-                {(github || website) && (
-                    <div class="flex items-center gap-2 ml-auto text-xs font-mono">
-                        {github && (
-                            <a href={github} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-sky-400 transition-colors">
-                                github
-                            </a>
-                        )}
-                        {github && website && <span class="text-gray-800">|</span>}
-                        {website && (
-                            <a href={website} target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-sky-400 transition-colors">
-                                website
-                            </a>
-                        )}
-                    </div>
-                )}
+        <div>
+            <div class="flex justify-between items-baseline gap-4 flex-wrap">
+                <div class="flex items-baseline gap-3 flex-wrap">
+                    <h3 class="font-semibold text-white">{title}</h3>
+                    {links && links.length > 0 && (
+                        <div class="flex items-center gap-2 text-xs">
+                            {links.map((link, i) => (
+                                <span key={link.href} class="flex items-center gap-2">
+                                    {i > 0 && <span class="text-gray-700">·</span>}
+                                    <a
+                                        href={link.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="text-gray-500 hover:text-sky-400 transition-colors"
+                                    >
+                                        {link.label}
+                                    </a>
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                <span class="text-sm text-gray-500 whitespace-nowrap">{period}</span>
             </div>
-            <p class="text-sm text-gray-400 mt-2">{description}</p>
-            <div class="flex flex-wrap gap-2 mt-3">
-                {tech.map(t => (
-                    <span key={t} class="text-xs font-mono px-2 py-0.5 rounded bg-sky-400/5 text-sky-400/60 border border-sky-400/10">
-                        {t}
-                    </span>
-                ))}
-            </div>
+            {(subtitle || location) && (
+                <div class="flex justify-between items-baseline gap-4 flex-wrap mt-0.5">
+                    {subtitle && <p class="text-sm text-gray-400 italic">{subtitle}</p>}
+                    {location && <span class="text-sm text-gray-500 italic whitespace-nowrap">{location}</span>}
+                </div>
+            )}
+            {bullets && bullets.length > 0 && (
+                <ul class="mt-2 space-y-1.5 list-disc list-outside ml-5 marker:text-gray-700">
+                    {bullets.map((b, i) => (
+                        <li key={i} class="text-sm text-gray-400 leading-relaxed pl-1">{b}</li>
+                    ))}
+                </ul>
+            )}
         </div>
     )
 }
