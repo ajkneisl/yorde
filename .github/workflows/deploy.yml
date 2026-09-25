@@ -4,31 +4,62 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: yorde
+  ECS_CLUSTER: yorde
+  ECS_SERVICE: yorde
+  CONTAINER_NAME: yorde
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     environment: production
     steps:
       -   name: Checkout
           uses: actions/checkout@v4
 
-      -   name: Setup Tailscale
-          uses: tailscale/github-action@v4
+      -   name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v4
           with:
-            oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-            oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-            tags: tag:ci
+            role-to-assume: arn:aws:iam::445567081553:role/yordeDeployRole
+            aws-region: ${{ env.AWS_REGION }}
 
-      -   name: Deploy via SSH
-          uses: appleboy/ssh-action@v1
+      -   name: Login to ECR
+          id: ecr
+          uses: aws-actions/amazon-ecr-login@v2
+
+      -   name: Build and push image
+          id: build
+          env:
+            IMAGE: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          run: |
+            docker build -t "$IMAGE" .
+            docker push "$IMAGE"
+            echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+
+      -   name: Render task definition
+          id: taskdef
+          run: |
+            aws ecs describe-task-definition --task-definition yorde \
+              --query taskDefinition > task-definition.json
+
+      -   name: Update task definition image
+          id: render
+          uses: aws-actions/amazon-ecs-render-task-definition@v1
           with:
-            host: ${{ secrets.SERVER_HOST }}
-            username: ${{ secrets.SERVER_USER }}
-            key: ${{ secrets.SERVER_SSH_KEY }}
-            script: |
-              cd /opt/docker/portfolio/yorde
-              git pull origin main
-              docker build -t yorde:1.0.0 .
-              docker stop yorde || true
-              docker rm yorde || true
-              docker compose -f /opt/docker/portfolio/Personal.yml up -d yorde
+            task-definition: task-definition.json
+            container-name: ${{ env.CONTAINER_NAME }}
+            image: ${{ steps.build.outputs.image }}
+
+      -   name: Deploy to ECS
+          uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+          with:
+            task-definition: ${{ steps.render.outputs.task-definition }}
+            cluster: ${{ env.ECS_CLUSTER }}
+            service: ${{ env.ECS_SERVICE }}
+            wait-for-service-stability: true
