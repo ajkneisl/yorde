@@ -1,66 +1,8 @@
 import type { JSX } from "preact"
-import { useCallback, useEffect, useRef, useState } from "preact/hooks"
-import { Console } from "./console"
-import { Crosshair, useAim } from "./crosshair"
-import {
-    education,
-    experience,
-    killfeed,
-    loadout,
-    profile,
-    projects,
-    scoreboard,
-    stats,
-    type Bullet,
-    type Link,
-    type Rarity,
-} from "./data"
 
-const SECTIONS = [
-    { id: "work", label: "Work" },
-    { id: "scoreboard", label: "Scoreboard" },
-    { id: "experience", label: "Experience" },
-    { id: "loadout", label: "Loadout" },
-    { id: "education", label: "Education" },
-    { id: "contact", label: "Contact" },
-]
-
-const RARITY: Record<Rarity, { label: string; varName: string }> = {
-    covert: { label: "Covert", varName: "var(--color-covert)" },
-    classified: { label: "Classified", varName: "var(--color-classified)" },
-    restricted: { label: "Restricted", varName: "var(--color-restricted)" },
-    milspec: { label: "Mil-Spec", varName: "var(--color-milspec)" },
-}
-
-const reduceMotion = () =>
-    typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches
+type Bullet = string | JSX.Element
 
 export function App() {
-    useReveal()
-    const active = useActiveSection()
-    const { aim, toggle } = useAim()
-    const [consoleOpen, setConsoleOpen] = useState(false)
-    const [shaking, setShaking] = useState(false)
-
-    const shake = useCallback(() => {
-        if (reduceMotion()) return
-        setShaking(true)
-        setTimeout(() => setShaking(false), 650)
-    }, [])
-
-    // ~ opens the console from anywhere that isn't a text field.
-    useEffect(() => {
-        const onKey = (e: KeyboardEvent) => {
-            if (e.key !== "`" && e.key !== "~") return
-            const t = e.target as HTMLElement | null
-            if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return
-            e.preventDefault()
-            setConsoleOpen((v) => !v)
-        }
-        window.addEventListener("keydown", onKey)
-        return () => window.removeEventListener("keydown", onKey)
-    }, [])
-
     return (
         <div class="w-full px-6 sm:px-10 py-16 text-gray-800">
             {/* Header */}
@@ -224,7 +166,6 @@ function ContactLink({ href, children }: { href: string; children: string }) {
             class="text-gray-700 underline underline-offset-2 hover:text-gray-900"
         >
             {children}
-            <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
         </a>
     )
 }
@@ -233,29 +174,7 @@ function Strong({ children }: { children: JSX.Element | string }) {
     return <strong class="text-gray-900 font-medium">{children}</strong>
 }
 
-function Killfeed() {
-    const row = (
-        <div class="flex shrink-0 items-center">
-            {killfeed.map((k, i) => (
-                <div key={`${k.victim}-${i}`} class="kf mx-2 flex items-center gap-3 px-3 py-1.5">
-                    <span class="font-mono text-[11px] uppercase tracking-[0.12em] text-gold">
-                        {profile.alias}
-                    </span>
-                    <WeaponGlyph kind={k.weapon} />
-                    {k.hs && (
-                        <svg viewBox="0 0 16 16" class="h-3 w-3 text-bone/70" aria-hidden="true">
-                            <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5" />
-                            <circle cx="8" cy="8" r="2" fill="currentColor" />
-                        </svg>
-                    )}
-                    <span class="font-mono text-[11px] uppercase tracking-[0.12em] text-bone/85">
-                        {k.victim}
-                    </span>
-                </div>
-            ))}
-        </div>
-    )
-
+function SkillGroup({ label, items }: { label: string; items: string[] }) {
     return (
         <div class="text-sm leading-relaxed">
             <span class="text-gray-900 font-medium">{label}: </span>
@@ -327,75 +246,4 @@ function Entry({ title, location, subtitle, period, tech, logo, bullets, links }
             </div>
         </div>
     )
-}
-
-/* ----------------------------------------------------------------- hooks */
-
-function useReveal() {
-    useEffect(() => {
-        const pending = new Set(document.querySelectorAll<HTMLElement>("[data-reveal]"))
-        if (typeof IntersectionObserver === "undefined" || reduceMotion()) {
-            pending.forEach((el) => el.classList.add("in"))
-            return
-        }
-
-        const show = (el: Element) => {
-            el.classList.add("in")
-            pending.delete(el as HTMLElement)
-            io.unobserve(el)
-        }
-
-        const io = new IntersectionObserver(
-            (entries) => entries.forEach((e) => e.isIntersecting && show(e.target)),
-            { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
-        )
-        pending.forEach((el) => io.observe(el))
-
-        // IntersectionObserver samples too slowly for anchor jumps and flung
-        // scrolls, so sweep anything that has already come into view.
-        let queued = false
-        const sweep = () => {
-            queued = false
-            if (!pending.size) return
-            const h = window.innerHeight
-            for (const el of [...pending]) {
-                if (el.getBoundingClientRect().top < h) show(el)
-            }
-        }
-        const onScroll = () => {
-            if (queued) return
-            queued = true
-            requestAnimationFrame(sweep)
-        }
-        window.addEventListener("scroll", onScroll, { passive: true })
-
-        return () => {
-            io.disconnect()
-            window.removeEventListener("scroll", onScroll)
-        }
-    }, [])
-}
-
-function useActiveSection() {
-    const [active, setActive] = useState("")
-
-    useEffect(() => {
-        if (typeof IntersectionObserver === "undefined") return
-        const targets = SECTIONS.map((s) => document.getElementById(s.id)).filter(
-            (el): el is HTMLElement => el !== null,
-        )
-        const io = new IntersectionObserver(
-            (entries) => {
-                const visible = entries
-                    .filter((e) => e.isIntersecting)
-                    .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-                if (visible) setActive(visible.target.id)
-            },
-            { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5] },
-        )
-        targets.forEach((el) => io.observe(el))
-        return () => io.disconnect()
-    }, [])
-
-    return active
 }
