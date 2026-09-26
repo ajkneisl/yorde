@@ -85,7 +85,8 @@ export function App() {
                         logo="/logo-socialcoding.svg"
                         tech={["React", "TypeScript", "Tailwind CSS", "Kotlin/Ktor", "PostgreSQL", "Docker"]}
                         links={[
-                            { label: "socialcoding.net", href: "https://socialcoding.net" },
+                            { label: "socialcoding.net", href: "https://socialcoding.net"},
+                            {label: "github", href: "https://github.com/ajkneisl/socialcoding"}
                         ]}
                         bullets={[
                             "Built and maintain the website for the University of Minnesota Social Coding club, the club's front door for prospective members and project teams.",
